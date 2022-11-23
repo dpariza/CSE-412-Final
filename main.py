@@ -11,8 +11,25 @@ dropMen.set("Santa Monica")
 drop = OptionMenu(gui,dropMen,*options)
 drop.pack()
 
-price = Scale(gui,from_=50,to=300,orient=HORIZONTAL)
-price.pack()
+min_text = Label(gui, text = "Enter Minimum Price")
+min_text.pack()
+min_price = Scale(gui,from_=50,to=300,orient=HORIZONTAL)
+min_price.pack()
+
+max_text = Label(gui, text = "Enter Maximum Price")
+max_text.pack()
+max_price = Scale(gui,from_=50,to=300,orient=HORIZONTAL)
+max_price.pack()
+
+bed_text = Label(gui, text = "Enter Num of Desired Beds")
+bed_text.pack()
+num_bed = Scale(gui,from_=1,to=10,orient=HORIZONTAL)
+num_bed.pack()
+
+bath_text = Label(gui, text = "Enter Num of Desired Baths")
+bath_text.pack()
+num_bath = Scale(gui,from_=1,to=10,orient=HORIZONTAL)
+num_bath.pack()
 
 menu = Menu(gui)
 gui.config(menu=menu)
