@@ -1,57 +1,60 @@
-from tkinter import *
+import tkinter as tk
 from tkcalendar import Calendar
 
-gui = Tk(className='Airbnb Data')
-# set window size
-gui.geometry("500x1000")
+#IN DBMS listings TABLE, NEIGHBORHOOD AND DESC ARE SWAPPED
 
+gui =tk.Tk(className="LA Airbnb Search")
+
+canvas = tk.Canvas(gui, width=500, height=500)
+canvas.grid(columnspan=100, rowspan=100)
 
 def save_selection(value):
     neighborhood=value
     print(neighborhood)
 
 
-options = ["Santa Monica", "Hollywood", "Venice Beach"]
-dropMen = StringVar()
+options = ["Hollywood", "Venice", "Long Beach", "Newport Beach", "Santa Monica", "West Hollywood", "Anaheim", "Downtown", "Irvine"]
+dropMen = tk.StringVar()
 dropMen.set("Santa Monica")
-drop = OptionMenu(gui, dropMen, *options, command=save_selection)
-drop.pack()
+drop = tk.OptionMenu(gui, dropMen, *options, command=save_selection)
+drop.grid(column=50, row=0)
 
-min_text = Label(gui, text="Enter Minimum Price")
-min_text.pack()
-min_price = Scale(gui, from_=50, to=300, orient=HORIZONTAL)
-min_price.pack()
 
-max_text = Label(gui, text="Enter Maximum Price")
-max_text.pack()
-max_price = Scale(gui, from_=50, to=300, orient=HORIZONTAL)
-max_price.pack()
+min_text = tk.Label(gui, text="Minimum Price:")
+min_text.grid(column=0, row=5)
+min_price = tk.Scale(gui, from_=50, to=300, orient=tk.HORIZONTAL)
+min_price.grid(column=1, row=5)
 
-bed_text = Label(gui, text="Enter Num of Desired Beds")
-bed_text.pack()
-num_bed = Scale(gui, from_=1, to=10, orient=HORIZONTAL)
-num_bed.pack()
+max_text = tk.Label(gui, text="Maximum Price:")
+max_text.grid(column=0, row=10)
+max_price = tk.Scale(gui, from_=50, to=300, orient=tk.HORIZONTAL)
+max_price.grid(column=1, row=10)
 
-bath_text = Label(gui, text="Enter Num of Desired Baths")
-bath_text.pack()
-num_bath = Scale(gui, from_=1, to=10, orient=HORIZONTAL)
-num_bath.pack()
+bed_text = tk.Label(gui, text="Beds:")
+bed_text.grid(column=99, row=5)
+num_bed = tk.Scale(gui, from_=1, to=10, orient=tk.HORIZONTAL)
+num_bed.grid(column=100, row=5)
 
-menu = Menu(gui)
+bath_text = tk.Label(gui, text="Bathrooms:")
+bath_text.grid(column=99, row=10)
+num_bath = tk.Scale(gui, from_=1, to=10, orient=tk.HORIZONTAL)
+num_bath.grid(column=100, row=10)
+
+menu = tk.Menu(gui)
 gui.config(menu=menu)
-backMenu = Menu(menu)
+backMenu = tk.Menu(menu)
 menu.add_cascade(label="Back", menu=backMenu)
 backMenu.add_command(label="Back to Filters")
 
-start_text = Label(gui, text="Enter Starting Date")
-start_text.pack()
+start_text = tk.Label(gui, text="Enter Starting Date")
+start_text.grid(column=1, row=90)
 cal1 = Calendar(gui, selectmode='day', year=2023, month=1, day=1)
-cal1.pack(pady=20)
+cal1.grid(column=1, row=91)
 
-end_text = Label(gui, text="Enter Ending Date")
-end_text.pack()
+end_text = tk.Label(gui, text="Enter Ending Date")
+end_text.grid(column=99, row=90)
 cal2 = Calendar(gui, selectmode='day', year=2023, month=1, day=1)
-cal2.pack(pady=20)
+cal2.grid(column=99, row=91)
 
 
 def get():
@@ -64,8 +67,8 @@ def get():
 
 
 # Add Button and Label
-Button(gui, text="Save Filters", command=get).pack(pady=20)
-date = Label(gui, text="")
-date.pack(pady=20)
+tk.Button(gui, text="Save Filters", command=get).grid(column=50, row=95)
+#date = tk.Label(gui, text="")
+#date.grid(column=99, row=99)
 
 gui.mainloop()
