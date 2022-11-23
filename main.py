@@ -5,10 +5,16 @@ gui = Tk(className='Airbnb Data')
 # set window size
 gui.geometry("500x1000")
 
+
+def save_selection(value):
+    neighborhood=value
+    print(neighborhood)
+
+
 options = ["Santa Monica", "Hollywood", "Venice Beach"]
 dropMen = StringVar()
 dropMen.set("Santa Monica")
-drop = OptionMenu(gui, dropMen, *options)
+drop = OptionMenu(gui, dropMen, *options, command=save_selection)
 drop.pack()
 
 min_text = Label(gui, text="Enter Minimum Price")
@@ -49,7 +55,12 @@ cal2.pack(pady=20)
 
 
 def get():
-    date.config(text="Selected Date is: " + cal2.get_date())
+    minimum=min_price.get()
+    maximum=max_price.get()
+    bed=num_bed.get()
+    bath=num_bath.get()
+    start_date = cal1.get_date()
+    end_date = cal2.get_date()
 
 
 # Add Button and Label
