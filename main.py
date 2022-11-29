@@ -180,9 +180,10 @@ def get():
 
     neighborhood = dropMen.get()
 
-    # my_results = execute_query(minimum, maximum, bed, accom, neighborhood, start_date, end_date)
-    # print(my_results[0][0])
-    # build_listings(my_results)
+    print(minimum, maximum, bed, accom, neighborhood, start_date, end_date)
+    my_results = execute_query(minimum, maximum, bed, accom, neighborhood, start_date, end_date)
+    print(my_results)
+    build_listings(my_results)
 
 
 def build_listings(result_dict):

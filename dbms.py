@@ -12,7 +12,7 @@ port_id = '5432'
 # Test your inputs for the query with these vars; a value of "None" means its ignored/checkboxed on the filters page
 min_price1 = 50
 max_price1 = 100
-bedrooms1 = None
+bedrooms1 = 2
 accommodates1 = 2
 neighborhood1 = 'Hollywood'
 checkin_date1 = '2022-12-01'
@@ -97,9 +97,12 @@ def execute_query(min_price, max_price, bedrooms, accommodates, neighborhood, ch
             query_where += f'''AND LI.accommodates = {accommodates}
             '''
 
-        if neighborhood is not None:
+        if neighborhood != "All Neighborhoods":
             query_where += f'''AND L.description = '{neighborhood}' --these are swapped in the dbms by mistake
             '''
+
+        query_where += '''AND RS.review_scores_rating IS NOT NULL
+			ORDER BY RS.review_scores_rating desc'''
 
         query = query_select + query_where
 
@@ -108,8 +111,9 @@ def execute_query(min_price, max_price, bedrooms, accommodates, neighborhood, ch
 
         df = pd.DataFrame(cur.fetchall(), columns=['Picture', 'Name', 'Neighborhood', 'Description', 'Price', 'Bedrooms', 'Accommodates', 'Rating'])
 
-        print(df)
-        print(df.loc[0, 'Picture'])
+        #print(df)
+        #print(df.loc[0, 'Picture'])
+        #print(df.loc[0, 'Rating'])
 
         return df
     except Exception as error:
