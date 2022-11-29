@@ -5,6 +5,9 @@ import os
 import requests
 from io import BytesIO
 from dbms import execute_query
+import pandas as pd
+import base64
+import urllib.request
 
 # IN DBMS listings TABLE, NEIGHBORHOOD AND DESC ARE SWAPPED
 
@@ -12,7 +15,7 @@ from dbms import execute_query
 minimum_bool, maximum_bool, bed_bool, accom_bool, dates_bool = True, True, True, True, True
 
 gui = tk.Tk(className="LA Airbnb Search")
-gui.geometry("1100x500")
+gui.geometry("1100x800")
 
 filters = tk.Frame(gui)
 filters.grid(row=0, column=0, sticky='news')
@@ -181,15 +184,64 @@ def get():
     neighborhood = dropMen.get()
 
     print(minimum, maximum, bed, accom, neighborhood, start_date, end_date)
-    my_results = execute_query(minimum, maximum, bed, accom, neighborhood, start_date, end_date)
+    # my_results = execute_query(minimum, maximum, bed, accom, neighborhood, start_date, end_date)
+    my_results = pd.read_csv('sample_data.csv')
     print(my_results)
-    build_listings(my_results)
+    build_listings(my_results, 0)
+    change_to_listings()
 
 
-def build_listings(result_dict):
-    print('hi')
+def build_listings(result_dict, index):
+    for widget in listings.winfo_children():
+        widget.destroy()
+    max_index = len(result_dict)-1
+    if index < 0:
+        index = 0
+    if index > max_index:
+        index = max_index
+    tk.Label(listings, text="Showing result " + str(index + 1) + " of " + str(max_index + 1)).grid(column=50, row=0)
+    tk.Button(listings, text="Previous", command=lambda: build_listings(result_dict, index - 1)).grid(column=49, row=90)
+    tk.Button(listings, text="Next", command=lambda: build_listings(result_dict, index + 1)).grid(column=51, row=90)
+    tk.Button(listings, text="Filters", command=change_to_filter).grid(column=50, row=95)
+
+    if max_index!=0:
+        display = tk.Frame(listings,width=400)
+        img_url = result_dict['picture'][index]
+        response = requests.get(img_url)
+        img_data = response.content
+        img = ImageTk.PhotoImage(Image.open(BytesIO(img_data)).resize((500,500)))
+        panel = tk.Label(display, image=img)
+        panel.image=img
+        panel.pack(side="top", fill="both", expand="yes")
+
+        name=result_dict['name'][index]
+        tk.Label(display, text="Name: " + name).pack()
+
+        neighborhood = result_dict['neighborhood'][index]
+        tk.Label(display, text="Neighborhood: " + neighborhood).pack()
+
+        description = result_dict['description'][index]
+        tk.Label(display, text="Description: " + str(description),wraplength=500).pack()
+
+        price = result_dict['price'][index]
+        tk.Label(display, text="Price: $" + str(price)).pack()
+
+        bedrooms = result_dict['bedrooms'][index]
+        tk.Label(display, text="Bedrooms: " + str(bedrooms)).pack()
+
+        accommodates = result_dict['accommodates'][index]
+        tk.Label(display, text="Accommodates: " + str(accommodates)).pack()
+
+        rating = result_dict['rating'][index]
+        tk.Label(display, text="Rating: " + str(rating)).pack()
+
+        display.grid(column=50, row=50)
 
 tk.Button(filters, text="Search for Listings", command=get).grid(column=50, row=95)
 
-filters.tkraise()
+# my_results = execute_query(None, None, None, None, None, None, None)
+my_results = pd.read_csv('sample_data.csv')
+build_listings(my_results, 0)
+
+listings.tkraise()
 gui.mainloop()
