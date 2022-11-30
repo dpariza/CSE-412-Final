@@ -102,7 +102,7 @@ drop.grid(column=50, row=0)
 # Min price scale
 min_text = tk.Label(filters, text="Minimum Price:")
 min_text.grid(column=0, row=5)
-min_price = tk.Scale(filters, from_=50, to=300, orient=tk.HORIZONTAL)
+min_price = tk.Scale(filters, from_=50, to=2000, orient=tk.HORIZONTAL)
 min_price.grid(column=1, row=5)
 check1 = tk.IntVar()
 c1 = tk.Checkbutton(filters, text='No Minimum', variable=check1, onvalue=1, offvalue=0, command=check_min)
@@ -111,7 +111,7 @@ c1.grid(column=2, row=5)
 # Max price scale
 max_text = tk.Label(filters, text="Maximum Price:")
 max_text.grid(column=0, row=10)
-max_price = tk.Scale(filters, from_=50, to=300, orient=tk.HORIZONTAL)
+max_price = tk.Scale(filters, from_=100, to=4000, orient=tk.HORIZONTAL)
 max_price.grid(column=1, row=10)
 check2 = tk.IntVar()
 c2 = tk.Checkbutton(filters, text='No Maximum', variable=check2, onvalue=1, offvalue=0, command=check_max)
@@ -138,13 +138,13 @@ c4.grid(column=100, row=10)
 # Checkin calendar
 start_text = tk.Label(filters, text="Enter Check-in Date:")
 start_text.grid(column=1, row=50)
-cal1 = Calendar(filters, selectmode='day', year=2023, month=1, day=1)
+cal1 = Calendar(filters, selectmode='day', year=2022, month=11, day=29)
 cal1.grid(column=1, row=51)
 
 # Checkout calendar
 end_text = tk.Label(filters, text="Enter Check-out Date:")
 end_text.grid(column=99, row=50)
-cal2 = Calendar(filters, selectmode='day', year=2023, month=1, day=1)
+cal2 = Calendar(filters, selectmode='day', year=2022, month=11, day=30)
 cal2.grid(column=99, row=51)
 
 # Availability checkbox
@@ -152,7 +152,7 @@ check5 = tk.IntVar()
 c5 = tk.Checkbutton(filters, text='Any Availability', variable=check5, onvalue=1, offvalue=0, command=check_dates)
 c5.grid(column=50, row=50)
 
-
+# Collect all user inputs; checked options default to "None"
 def get():
     if minimum_bool:
         minimum = min_price.get()
@@ -183,10 +183,9 @@ def get():
 
     neighborhood = dropMen.get()
 
-    print(minimum, maximum, bed, accom, neighborhood, start_date, end_date)
-    # my_results = execute_query(minimum, maximum, bed, accom, neighborhood, start_date, end_date)
-    my_results = pd.read_csv('sample_data.csv')
-    print(my_results)
+    #print(minimum, maximum, bed, accom, neighborhood, start_date, end_date)
+    my_results = execute_query(minimum, maximum, bed, accom, neighborhood, start_date, end_date)
+    #print(my_results)
     build_listings(my_results, 0)
     change_to_listings()
 
@@ -206,7 +205,7 @@ def build_listings(result_dict, index):
 
     if max_index!=0:
         display = tk.Frame(listings,width=400)
-        img_url = result_dict['picture'][index]
+        img_url = result_dict['Picture'][index]
         response = requests.get(img_url)
         img_data = response.content
         img = ImageTk.PhotoImage(Image.open(BytesIO(img_data)).resize((500,500)))
@@ -214,34 +213,30 @@ def build_listings(result_dict, index):
         panel.image=img
         panel.pack(side="top", fill="both", expand="yes")
 
-        name=result_dict['name'][index]
+        name=result_dict['Name'][index]
         tk.Label(display, text="Name: " + name).pack()
 
-        neighborhood = result_dict['neighborhood'][index]
+        neighborhood = result_dict['Neighborhood'][index]
         tk.Label(display, text="Neighborhood: " + neighborhood).pack()
 
-        description = result_dict['description'][index]
+        description = result_dict['Description'][index]
         tk.Label(display, text="Description: " + str(description),wraplength=500).pack()
 
-        price = result_dict['price'][index]
+        price = result_dict['Price'][index]
         tk.Label(display, text="Price: $" + str(price)).pack()
 
-        bedrooms = result_dict['bedrooms'][index]
+        bedrooms = result_dict['Bedrooms'][index]
         tk.Label(display, text="Bedrooms: " + str(bedrooms)).pack()
 
-        accommodates = result_dict['accommodates'][index]
+        accommodates = result_dict['Accommodates'][index]
         tk.Label(display, text="Accommodates: " + str(accommodates)).pack()
 
-        rating = result_dict['rating'][index]
+        rating = result_dict['Rating'][index]
         tk.Label(display, text="Rating: " + str(rating)).pack()
 
         display.grid(column=50, row=50)
 
 tk.Button(filters, text="Search for Listings", command=get).grid(column=50, row=95)
 
-# my_results = execute_query(None, None, None, None, None, None, None)
-my_results = pd.read_csv('sample_data.csv')
-build_listings(my_results, 0)
-
-listings.tkraise()
+filters.tkraise()
 gui.mainloop()

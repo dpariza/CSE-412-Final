@@ -9,16 +9,6 @@ db_host = 'localhost'
 port_id = '5432'
 
 
-# Test your inputs for the query with these vars; a value of "None" means its ignored/checkboxed on the filters page
-min_price1 = 50
-max_price1 = 100
-bedrooms1 = 2
-accommodates1 = 2
-neighborhood1 = 'Hollywood'
-checkin_date1 = '2022-12-01'
-checkout_date1 = '2022-12-31'
-
-
 def execute_query(min_price, max_price, bedrooms, accommodates, neighborhood, checkin_date, checkout_date):
     try:
         conn = psycopg2.connect(dbname=db_name,
@@ -97,7 +87,7 @@ def execute_query(min_price, max_price, bedrooms, accommodates, neighborhood, ch
             query_where += f'''AND LI.accommodates = {accommodates}
             '''
 
-        if neighborhood != "All Neighborhoods":
+        if neighborhood != "All Neighborhoods" and neighborhood is not None:
             query_where += f'''AND L.description = '{neighborhood}' --these are swapped in the dbms by mistake
             '''
 
@@ -106,14 +96,13 @@ def execute_query(min_price, max_price, bedrooms, accommodates, neighborhood, ch
 
         query = query_select + query_where
 
-        #print(query)
         cur.execute(query)
 
-        df = pd.DataFrame(cur.fetchall(), columns=['Picture', 'Name', 'Neighborhood', 'Description', 'Price', 'Bedrooms', 'Accommodates', 'Rating'])
+        df = pd.DataFrame(cur.fetchall(),
+                          columns=['Picture', 'Name', 'Neighborhood', 'Description', 'Price', 'Bedrooms',
+                                   'Accommodates', 'Rating'])
 
         #print(df)
-        #print(df.loc[0, 'Picture'])
-        #print(df.loc[0, 'Rating'])
 
         return df
     except Exception as error:
@@ -124,5 +113,4 @@ def execute_query(min_price, max_price, bedrooms, accommodates, neighborhood, ch
         if conn is not None:
             conn.close()
 
-# Uncomment this if you'd like to test it out with the test vars above!
-#execute_query(min_price1, max_price1, bedrooms1, accommodates1, neighborhood1, checkin_date1, checkout_date1)
+
